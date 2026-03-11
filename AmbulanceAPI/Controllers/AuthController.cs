@@ -86,28 +86,29 @@ namespace AmbulanceAPI.Controllers
         [HttpPost("register-driver")]
         public async Task<IActionResult> RegisterDriver([FromBody] LoginDriverDto request)
         {
-            // Check if username exists
+            // 1. Check if username already exists
             if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             {
-                return BadRequest("Username already exists");
+                return BadRequest(new { message = "اسم المستخدم موجود مسبقاً" }); // Username already exists
             }
 
-            // Hash the password
+            // 2. Hash the password securely
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
+            // 3. Create the user with "Pending" status
             var user = new User
             {
                 Username = request.Username,
                 PasswordHash = passwordHash,
                 UserType = "Ambulance",
-                AccountStatus = "Active",
+                AccountStatus = "Pending", // <--- CRITICAL: Requires Admin Approval
                 CreatedAt = DateTime.UtcNow
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Driver created successfully!" });
+            return Ok(new { message = "تم التسجيل بنجاح. يرجى انتظار موافقة الإدارة." }); // Registration successful. Wait for admin.
         }
 
         // Helper: Generate JWT
