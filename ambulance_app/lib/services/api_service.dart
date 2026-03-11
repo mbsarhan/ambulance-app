@@ -97,4 +97,32 @@ class ApiService {
       print("Error sending location: $e");
     }
   }
+
+  // 4. Register Driver
+  Future<String> registerDriver(String username, String password) async {
+    final url = Uri.parse('${AppConstants.baseUrl}/Auth/register-driver');
+    
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'username': username,
+          'password': password,
+          'fcmToken': '' // Not needed until login
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return "success";
+      } else {
+        // Return the error message from the backend (e.g., "Username already exists")
+        final data = jsonDecode(response.body);
+        return data['message'] ?? "فشل التسجيل"; // Registration failed
+      }
+    } catch (e) {
+      print("Error registering driver: $e");
+      return "خطأ في الاتصال بالخادم"; // Server connection error
+    }
+  }
 }

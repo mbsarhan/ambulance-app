@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
             // Regular User Button
             _buildRoleButton(
               context,
-              "أنا مستخدم عادي", // I am a regular user
+              "مستخدم عادي", // I am a regular user
               Icons.person,
               () async {
                 bool success = await ApiService().loginAsGuest();
@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
             // Driver Button
             _buildRoleButton(
               context,
-              "أنا سائق إسعاف", // I am an ambulance driver
+              "سائق إسعاف", // I am an ambulance driver
               Icons.directions_car,
               () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const DriverLoginScreen()));
